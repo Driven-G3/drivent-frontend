@@ -3,8 +3,11 @@ import TabTitle from '../../../components/Dashboard/Tab/TabTitle.js';
 import { useState } from 'react';
 import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSection.js';
 import OrderSummary from '../../../components/Dashboard/Tab/Payment/OrderSummary.js';
+import useEnrollment from '../../../hooks/api/useEnrollment.js';
+import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen.js';
 
 export default function Payment() {
+  const { enrollment } = useEnrollment();
   const [chosenTicket, setChosenTicket] = useState(null);
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
   const ticketChoices = [
@@ -15,6 +18,15 @@ export default function Payment() {
     { name: 'Sem Hotel', price: 0, includesHotel: false },
     { name: 'Com Hotel', price: 350, includesHotel: true },
   ];
+
+  if (!enrollment) {
+    return (
+      <WarningScreen
+        text="Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso"
+        tabTitle="Ingresso e Pagamento"
+      />
+    );
+  }
 
   return (
     <StyleTab>
