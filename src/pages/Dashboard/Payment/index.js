@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import TabTitle from '../../../components/Dashboard/Tab/TabTitle.js';
-import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle.js';
-import ChoiceButton from '../../../components/Dashboard/Tab/Payment/ChoiceButton.js';
 import { useState } from 'react';
 import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSection.js';
+import OrderSummary from '../../../components/Dashboard/Tab/Payment/OrderSummary.js';
 
 export default function Payment() {
   const [chosenTicket, setChosenTicket] = useState(null);
@@ -37,6 +36,9 @@ export default function Payment() {
           state={chosenAccommodation}
           setState={setChosenAccommodation}
         />
+      )}
+      {chosenTicket?.name === 'Online' && (
+        <OrderSummary sum={chosenTicket.price}/>
       )}
     </StyleTab>
   );
