@@ -37,8 +37,10 @@ export default function Payment() {
           setState={setChosenAccommodation}
         />
       )}
-      {chosenTicket?.name === 'Online' && (
-        <OrderSummary sum={chosenTicket.price}/>
+      {chosenTicket?.name === 'Online' && <OrderSummary sum={chosenTicket.price} />}
+
+      {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
+        <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} />
       )}
     </StyleTab>
   );
