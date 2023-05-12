@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import TabSectionTitle from '../TabSectionTitle';
 import SimpleButton from '../SimpleButton';
+import UserContext from '../../../../contexts/UserContext';
+import { useContext } from 'react';
 
 export default function OrderSummary({ sum, actionBtn }) {
   return (
@@ -11,7 +13,7 @@ export default function OrderSummary({ sum, actionBtn }) {
       <SimpleButton text="RESERVAR INGRESSO" onClick={actionBtn} />
     </OrderSummaryStyle>
   );
-}
+};  
 
 const OrderSummaryStyle = styled.section`
   h2 {

@@ -1,6 +1,8 @@
+import React, { useContext, useState } from 'react';
+import Cards from 'react-credit-cards-2';
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import styled from 'styled-components';
 import TabTitle from '../../../components/Dashboard/Tab/TabTitle.js';
-import { useState } from 'react';
 import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSection.js';
 import OrderSummary from '../../../components/Dashboard/Tab/Payment/OrderSummary.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
@@ -9,6 +11,9 @@ import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 import { createTicket } from '../../../services/ticketApi.js';
 import useToken from '../../../hooks/useToken.js';
 import { toast } from 'react-toastify';
+import UserContext from '../../../contexts/UserContext.js';
+import { ChoosedTicket } from '../../../components/Dashboard/Tab/Payment/ChoosedTicket.js';
+import Card from '../../../components/Dashboard/Tab/Payment/Card.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -16,6 +21,7 @@ export default function Payment() {
   const [chosenTicket, setChosenTicket] = useState(null);
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
   const token = useToken();
+  const { setDescription, setFinalPrice, setPaymentEnvironment } = useContext(UserContext);
   const ticketChoices = [
     { name: 'Presencial', price: 250, isRemote: false },
     { name: 'Online', price: 100, isRemote: true },
@@ -33,8 +39,19 @@ export default function Payment() {
     });
     return type.id;
   }
-
-  async function bookTicket() {
+  
+  function goForPayment() {
+    const text = chosenTicket.name + ' ' + chosenAccommodation.name;
+    if(text==undefined) {
+      setDescription('Online');
+    }else{
+      setDescription(text);
+    }
+    setPaymentEnvironment(false);
+    setFinalPrice(sum);
+  };
+  
+  async function bookTicket() { 
     try {
       await createTicket(
         {
@@ -42,6 +59,7 @@ export default function Payment() {
         },
         token
       );
+      goForPayment();
       toast('Reserva feita com sucesso!');
     } catch (error) {
       toast('Não foi possível realizar sua reserva');
@@ -57,8 +75,8 @@ export default function Payment() {
     );
   }
 
-  return (
-    <StyleTab>
+  return (<>
+    {paymentEnvironment ? <StyleTab>
       <TabTitle>Ingresso e Pagamento</TabTitle>
 
       <ChoiceSection
@@ -83,7 +101,14 @@ export default function Payment() {
       {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
         <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} actionBtn={bookTicket} />
       )}
-    </StyleTab>
+    </StyleTab> :
+      <StyleTab>
+        <TabTitle>Ingresso e Pagamento</TabTitle>
+        <ChoosedTicket></ChoosedTicket>
+        <Card></Card>
+      </StyleTab>
+    }
+  </>
   );
 }
 
