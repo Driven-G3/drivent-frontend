@@ -21,7 +21,7 @@ export default function Payment() {
   const [chosenTicket, setChosenTicket] = useState(null);
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
   const token = useToken();
-  const { setDescription, setFinalPrice, setPaymentEnvironment } = useContext(UserContext);
+  const { paymentEnvironment, setDescription, setFinalPrice, setPaymentEnvironment } = useContext(UserContext);
   const ticketChoices = [
     { name: 'Presencial', price: 250, isRemote: false },
     { name: 'Online', price: 100, isRemote: true },
@@ -39,19 +39,19 @@ export default function Payment() {
     });
     return type.id;
   }
-  
-  function goForPayment() {
+
+  function goForPayment(sum) {
     const text = chosenTicket.name + ' ' + chosenAccommodation.name;
-    if(text==undefined) {
+    if (text == undefined) {
       setDescription('Online');
-    }else{
+    } else {
       setDescription(text);
     }
     setPaymentEnvironment(false);
     setFinalPrice(sum);
-  };
-  
-  async function bookTicket() { 
+  }
+
+  async function bookTicket(sum) {
     try {
       await createTicket(
         {
@@ -59,7 +59,7 @@ export default function Payment() {
         },
         token
       );
-      goForPayment();
+      goForPayment(sum);
       toast('Reserva feita com sucesso!');
     } catch (error) {
       toast('Não foi possível realizar sua reserva');
@@ -75,40 +75,51 @@ export default function Payment() {
     );
   }
 
-  return (<>
-    {paymentEnvironment ? <StyleTab>
-      <TabTitle>Ingresso e Pagamento</TabTitle>
+  return (
+    <>
+      {paymentEnvironment ? (
+        <StyleTab>
+          <TabTitle>Ingresso e Pagamento</TabTitle>
 
-      <ChoiceSection
-        className="ticketModality"
-        title="Primeiro, escolha sua modalidade de ingresso"
-        choices={ticketChoices}
-        state={chosenTicket}
-        setState={setChosenTicket}
-      />
+          <ChoiceSection
+            className="ticketModality"
+            title="Primeiro, escolha sua modalidade de ingresso"
+            choices={ticketChoices}
+            state={chosenTicket}
+            setState={setChosenTicket}
+          />
 
-      {chosenTicket?.name === 'Presencial' && (
-        <ChoiceSection
-          className="includesHotel"
-          title="Ótimo! Agora escolha sua modalidade de hospedagem"
-          choices={accommodationChoices}
-          state={chosenAccommodation}
-          setState={setChosenAccommodation}
-        />
+          {chosenTicket?.name === 'Presencial' && (
+            <ChoiceSection
+              className="includesHotel"
+              title="Ótimo! Agora escolha sua modalidade de hospedagem"
+              choices={accommodationChoices}
+              state={chosenAccommodation}
+              setState={setChosenAccommodation}
+            />
+          )}
+          {chosenTicket?.name === 'Online' && (
+            <OrderSummary
+              sum={chosenTicket.price}
+              actionBtn={() => bookTicket(chosenTicket.price + chosenAccommodation.price)}
+            />
+          )}
+
+          {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
+            <OrderSummary
+              sum={chosenTicket.price + chosenAccommodation.price}
+              actionBtn={() => bookTicket(chosenTicket.price + chosenAccommodation.price)}
+            />
+          )}
+        </StyleTab>
+      ) : (
+        <StyleTab>
+          <TabTitle>Ingresso e Pagamento</TabTitle>
+          <ChoosedTicket></ChoosedTicket>
+          <Card></Card>
+        </StyleTab>
       )}
-      {chosenTicket?.name === 'Online' && <OrderSummary sum={chosenTicket.price} />}
-
-      {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
-        <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} actionBtn={bookTicket} />
-      )}
-    </StyleTab> :
-      <StyleTab>
-        <TabTitle>Ingresso e Pagamento</TabTitle>
-        <ChoosedTicket></ChoosedTicket>
-        <Card></Card>
-      </StyleTab>
-    }
-  </>
+    </>
   );
 }
 
