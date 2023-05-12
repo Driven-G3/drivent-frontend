@@ -4,26 +4,13 @@ import SimpleButton from '../SimpleButton';
 import UserContext from '../../../../contexts/UserContext';
 import { useContext } from 'react';
 
-export default function OrderSummary({ sum, text }) {
-  const { paymentEnvironment, setPaymentEnvironment, finalPrice, setFinalPrice, description, setDescription  } = useContext(UserContext);
-
-  function goForPayment() {
-    if(text==undefined) {
-      setDescription('Online');
-    }else{
-      setDescription(text);
-    }
-    console.log('entrou');
-    setPaymentEnvironment(false);
-    setFinalPrice(sum);
-  };
-
+export default function OrderSummary({ sum, actionBtn }) {
   return (
     <OrderSummaryStyle>
       <TabSectionTitle>
         Fechado! O total ficou em <strong>R$ {sum}</strong>. Agora é só confirmar:
       </TabSectionTitle>
-      <SimpleButton text="RESERVAR INGRESSO" onClick={() => { goForPayment();}} />
+      <SimpleButton text="RESERVAR INGRESSO" onClick={actionBtn} />
     </OrderSummaryStyle>
   );
 };  

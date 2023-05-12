@@ -7,16 +7,21 @@ import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSecti
 import OrderSummary from '../../../components/Dashboard/Tab/Payment/OrderSummary.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
 import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen.js';
+import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
+import { createTicket } from '../../../services/ticketApi.js';
+import useToken from '../../../hooks/useToken.js';
+import { toast } from 'react-toastify';
 import UserContext from '../../../contexts/UserContext.js';
 import { ChoosedTicket } from '../../../components/Dashboard/Tab/Payment/ChoosedTicket.js';
 import Card from '../../../components/Dashboard/Tab/Payment/Card.js';
-import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
+  const { ticketTypes } = useTicketTypes();
   const [chosenTicket, setChosenTicket] = useState(null);
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
-  const { paymentEnvironment, setPaymentEnvironment } = useContext(UserContext);
+  const token = useToken();
+  const { setDescription, setFinalPrice, setPaymentEnvironment } = useContext(UserContext);
   const ticketChoices = [
     { name: 'Presencial', price: 250, isRemote: false },
     { name: 'Online', price: 100, isRemote: true },
@@ -25,6 +30,42 @@ export default function Payment() {
     { name: 'Sem Hotel', price: 0, includesHotel: false },
     { name: 'Com Hotel', price: 350, includesHotel: true },
   ];
+
+  function findTicketTypeId() {
+    const [type] = ticketTypes.filter((ticket) => {
+      return (
+        ticket.isRemote === !!chosenTicket.isRemote && ticket.includesHotel === !!chosenAccommodation?.includesHotel
+      );
+    });
+    return type.id;
+  }
+  
+  function goForPayment() {
+    const text = chosenTicket.name + ' ' + chosenAccommodation.name;
+    if(text==undefined) {
+      setDescription('Online');
+    }else{
+      setDescription(text);
+    }
+    setPaymentEnvironment(false);
+    setFinalPrice(sum);
+  };
+  
+  async function bookTicket() { 
+    try {
+      await createTicket(
+        {
+          ticketTypeId: findTicketTypeId(),
+        },
+        token
+      );
+      goForPayment();
+      toast('Reserva feita com sucesso!');
+    } catch (error) {
+      toast('Não foi possível realizar sua reserva');
+    }
+  }
+
   if (!enrollment) {
     return (
       <WarningScreen
@@ -58,16 +99,15 @@ export default function Payment() {
       {chosenTicket?.name === 'Online' && <OrderSummary sum={chosenTicket.price} />}
 
       {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
-        <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} text={chosenTicket.name + ' ' + chosenAccommodation.name}  />
+        <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} actionBtn={bookTicket} />
       )}
-    </StyleTab> : <>
+    </StyleTab> :
       <StyleTab>
         <TabTitle>Ingresso e Pagamento</TabTitle>
         <ChoosedTicket></ChoosedTicket>
+        <Card></Card>
       </StyleTab>
-
-      <Card></Card>
-    </>}
+    }
   </>
   );
 }
