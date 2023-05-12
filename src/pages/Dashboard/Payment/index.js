@@ -1,157 +1,83 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import styled from 'styled-components';
+import TabTitle from '../../../components/Dashboard/Tab/TabTitle.js';
+import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSection.js';
+import OrderSummary from '../../../components/Dashboard/Tab/Payment/OrderSummary.js';
+import useEnrollment from '../../../hooks/api/useEnrollment.js';
+import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen.js';
+import UserContext from '../../../contexts/UserContext.js';
+import { ChoosedTicket } from '../../../components/Dashboard/Tab/Payment/ChoosedTicket.js';
+import Card from '../../../components/Dashboard/Tab/Payment/Card.js';
+import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle.js';
 
 export default function Payment() {
-  const [state, setState] = useState({
-    number: '',
-    expiry: '',
-    cvc: '',
-    name: '',
-    focus: '',
-  });
+  const { enrollment } = useEnrollment();
+  const [chosenTicket, setChosenTicket] = useState(null);
+  const [chosenAccommodation, setChosenAccommodation] = useState(null);
+  const { paymentEnvironment, setPaymentEnvironment } = useContext(UserContext);
+  const ticketChoices = [
+    { name: 'Presencial', price: 250, isRemote: false },
+    { name: 'Online', price: 100, isRemote: true },
+  ];
+  const accommodationChoices = [
+    { name: 'Sem Hotel', price: 0, includesHotel: false },
+    { name: 'Com Hotel', price: 350, includesHotel: true },
+  ];
+  if (!enrollment) {
+    return (
+      <WarningScreen
+        text="Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso"
+        tabTitle="Ingresso e Pagamento"
+      />
+    );
+  }
 
-  const handleInputChange = (evt) => {
-    const { name, value } = evt.target;
-    
-    setState((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleInputFocus = (evt) => {
-    setState((prev) => ({ ...prev, focus: evt.target.name }));
-  };
-
-  function submit() {
-    console.log(state);
-  };
   return (<>
-    <Text>Pagamento</Text>
-    <PaymentFormContainer>
-      <CardContainer> 
-        <Cards
-          number={state.number}
-          expiry={state.expiry}
-          cvc={state.cvc}
-          name={state.name}
-          focused={state.focus}
+    {paymentEnvironment ? <StyleTab>
+      <TabTitle>Ingresso e Pagamento</TabTitle>
+
+      <ChoiceSection
+        className="ticketModality"
+        title="Primeiro, escolha sua modalidade de ingresso"
+        choices={ticketChoices}
+        state={chosenTicket}
+        setState={setChosenTicket}
+      />
+
+      {chosenTicket?.name === 'Presencial' && (
+        <ChoiceSection
+          className="includesHotel"
+          title="Ótimo! Agora escolha sua modalidade de hospedagem"
+          choices={accommodationChoices}
+          state={chosenAccommodation}
+          setState={setChosenAccommodation}
         />
-      </CardContainer>
-      <InputContainer
-        onSubmit={submit} >
-        <Input1
-          type="tel"
-          name="number"
-          placeholder="Card Number"
-          value={state.number}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-        />
-        {/* <Subtitle>E.g.:49...,51...,36...,37...</Subtitle> */}
-        <Input1
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={state.text}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-        />
-        <InputLayout>
-          <Input2
-            type="tel"
-            name="expiry"
-            placeholder="Valid thru"
-            value={state.expiry}
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-          />
-          <Input3
-            type="tel"
-            name="cvc"
-            placeholder="CVC"
-            value={state.cvc}
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-          />
-        </InputLayout>
-        <Button type='submit'>FINALIZAR PAGAMENTO</Button>
-      </InputContainer>
-    </PaymentFormContainer>
+      )}
+      {chosenTicket?.name === 'Online' && <OrderSummary sum={chosenTicket.price} />}
+
+      {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
+        <OrderSummary sum={chosenTicket.price + chosenAccommodation.price} text={chosenTicket.name + ' ' + chosenAccommodation.name}  />
+      )}
+    </StyleTab> : <>
+      <StyleTab>
+        <TabTitle>Ingresso e Pagamento</TabTitle>
+        <ChoosedTicket></ChoosedTicket>
+      </StyleTab>
+
+      <Card></Card>
+    </>}
   </>
   );
-};
-const PaymentFormContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
-  margin-top: 20px;
-  position: absolute;
-  left: 335px;
-  margin-left: 20px;
+}
 
-`;
-const Button = styled.button`
-  position: absolute;
-  width: 182px;
-  height: 37px;
-  left: 0px;
-  top: 203px;
-  background: #E0E0E0;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
-  margin-left: 20px;
+const StyleTab = styled.div`
+  h1 {
+    margin-bottom: 36px;
+  }
 
-  `;
-
-const CardContainer = styled.div`
-  /* flex-basis: 60%; */
-  text-align: left;
-`;
-
-const InputContainer = styled.form`
-  flex-basis: 40%;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 180px;
-  margin-right: 150px;
-  margin-left: 30px;
-
-`;
-const Input1 = styled.input`
-    margin: 8px 0;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    width: 100%;
-    max-width: 300px;
-`;
-
-const Input2 = styled.input`
-    margin: 8px 0;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    width: 100%;
-    max-width: 150px;
-`;
-const Input3 = styled.input`
-    margin: 8px 0;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    width: 100%;
-    max-width: 100px;
-`;
-const InputLayout = styled.div`
-    display:flex;
-    width: 300px;
-    justify-content: space-between;
-`;
-const Text = styled.div`
-  margin-top:290px;
-  margin-left: 20px;
+  section {
+    margin-bottom: 44px;
+  }
 `;
