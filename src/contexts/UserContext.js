@@ -7,7 +7,7 @@ export default UserContext;
 
 export function UserProvider({ children }) {
   const [userData, setUserData] = useLocalStorage('userData', {});
-  const [paymentEnvironment, setPaymentEnvironment] = useState(true);
+  const [paymentEnvironment, setPaymentEnvironment] = useState(false);
   const [finalPrice, setFinalPrice] = useState('');
   const [description, setDescription] = useState('');
   return (

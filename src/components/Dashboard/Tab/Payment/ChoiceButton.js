@@ -20,7 +20,8 @@ const ButtonStyle = styled.button`
   justify-content: center;
 
   width: ${(props) => (props.square ? '145px' : 'initial')};
-  height: 145px;
+  height: ${(props) => (props.square ? '145px' : '108px')};
+  padding: ${(props) => (!props.square ? '0 60px': 'initial')};
 
   border: ${(props) => (props.selected ? 'none' : '1px solid #cecece')};
   border-radius: 20px;

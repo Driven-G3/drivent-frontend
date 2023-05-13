@@ -2,18 +2,16 @@ import styled from 'styled-components';
 import TabSectionTitle from '../TabSectionTitle';
 import { useContext } from 'react';
 import UserContext from '../../../../contexts/UserContext';
+import ChoiceButton from './ChoiceButton';
 
 export function ChoosedTicket() {
   const { finalPrice, setFinalPrice, description } = useContext(UserContext);
 
-  return (<>
-    <TabSectionTitle>Ingresso escolhido</TabSectionTitle>
-    <ButtonStyle >
-      <Description>{description}</Description>
-      <Price>R${finalPrice} </Price>
-    </ButtonStyle>
-    <TabSectionTitle>Pagamento</TabSectionTitle>
-  </>
+  return (
+    <section>
+      <TabSectionTitle>Ingresso escolhido</TabSectionTitle>
+      <ChoiceButton description={description} price={finalPrice} square={false} onClick={() => {}} selected />
+    </section>
   );
 }
 
@@ -25,7 +23,7 @@ const ButtonStyle = styled.button`
   width: 290px;
   height: 108px;
   border-radius: 20px;
-  background-color: #FFEED2 ;
+  background-color: #ffeed2;
   margin-top: 16px;
   margin-bottom: 16px;
 `;

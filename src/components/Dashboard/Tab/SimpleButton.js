@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export default function SimpleButton({ text, onClick }) {
+export default function SimpleButton({ text, onClick = () => {} }) {
   return <SimpleButtonStyle onClick={onClick}>{text}</SimpleButtonStyle>;
 }
 
