@@ -26,7 +26,7 @@ export default function TicketsSubTab() {
   ];
 
   function goForPayment(sum) {
-    const text = chosenTicket.name + ' ' + chosenAccommodation.name;
+    const text = chosenAccommodation && chosenTicket.name + ' + ' + chosenAccommodation.name;
     if (text == undefined) {
       setDescription('Online');
     } else {
@@ -37,6 +37,7 @@ export default function TicketsSubTab() {
   }
 
   async function bookTicket(sum) {
+    console.log(findTicketTypeId());
     try {
       await createTicket(
         {
@@ -47,6 +48,7 @@ export default function TicketsSubTab() {
       goForPayment(sum);
       toast('Reserva feita com sucesso!');
     } catch (error) {
+      console.log(error);
       toast('Não foi possível realizar sua reserva');
     }
   }
@@ -81,11 +83,9 @@ export default function TicketsSubTab() {
           setState={setChosenAccommodation}
         />
       )}
+
       {chosenTicket?.name === 'Online' && (
-        <OrderSummary
-          sum={chosenTicket.price}
-          actionBtn={() => bookTicket(chosenTicket.price)}
-        />
+        <OrderSummary sum={chosenTicket.price} actionBtn={() => bookTicket(chosenTicket.price)} />
       )}
 
       {chosenTicket && chosenAccommodation && chosenTicket.name !== 'Online' && (
