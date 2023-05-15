@@ -7,18 +7,21 @@ import EventInfoContext from '../../contexts/EventInfoContext';
 import NavigationBar from '../../components/Dashboard/NavigationBar';
 
 import DashboardLayout from '../../layouts/Dashboard';
+import { PaymentProvider } from '../../contexts/PaymentContext';
 
 export default function Dashboard() {
   const { eventInfo } = useContext(EventInfoContext);
 
   return (
-    <DashboardLayout background={eventInfo.backgroundImageUrl}>
-      <NavigationBar />
+    <PaymentProvider>
+      <DashboardLayout background={eventInfo.backgroundImageUrl}>
+        <NavigationBar />
 
-      <Container>
-        <Outlet />
-      </Container>
-    </DashboardLayout>
+        <Container>
+          <Outlet />
+        </Container>
+      </DashboardLayout>
+    </PaymentProvider>
   );
 }
 
