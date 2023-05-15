@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
 import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen.js';
-import UserContext from '../../../contexts/UserContext.js';
 import PaymentSubTab from './PaymentSubTab.js';
 import TicketsSubTab from './TicketsSubTab.js';
+import PaymentContext from '../../../contexts/PaymentContext.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
-  const { paymentEnvironment } = useContext(UserContext);
+  const { paymentEnvironment } = useContext(PaymentContext);
 
   if (!enrollment) {
     return (

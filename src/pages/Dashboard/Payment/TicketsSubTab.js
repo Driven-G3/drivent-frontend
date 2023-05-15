@@ -8,13 +8,16 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useState, useContext } from 'react';
 import UserContext from '../../../contexts/UserContext.js';
+import PaymentContext from '../../../contexts/PaymentContext.js';
 
 export default function TicketsSubTab() {
   const token = useToken();
   const { ticketTypes } = useTicketTypes();
   const [chosenTicket, setChosenTicket] = useState(null);
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
-  const { setDescription, setFinalPrice, setPaymentEnvironment } = useContext(UserContext);
+  const { setDescription, setFinalPrice, paymentEnvironment, setPaymentEnvironment } = useContext(PaymentContext);
+
+  console.log(paymentEnvironment);
 
   const ticketChoices = [
     { name: 'Presencial', price: 250, isRemote: false },
@@ -32,6 +35,7 @@ export default function TicketsSubTab() {
     } else {
       setDescription(text);
     }
+    console.log(paymentEnvironment);
     setPaymentEnvironment(true);
     setFinalPrice(sum);
   }
