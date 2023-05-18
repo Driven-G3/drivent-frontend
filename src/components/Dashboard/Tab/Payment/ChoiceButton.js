@@ -1,7 +1,13 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
+import UserContext from '../../../../contexts/UserContext';
 
 export default function ChoiceButton({ description, price, square = true, onClick, selected = false }) {
+  const { ticketType, setTicketType } = useContext(UserContext);
+
   function handlerClick() {
+    setTicketType(description);
+    console.log(ticketType);
     onClick();
   }
 
