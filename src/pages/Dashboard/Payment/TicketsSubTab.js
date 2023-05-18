@@ -17,8 +17,6 @@ export default function TicketsSubTab() {
   const [chosenAccommodation, setChosenAccommodation] = useState(null);
   const { setDescription, setFinalPrice, paymentEnvironment, setPaymentEnvironment } = useContext(PaymentContext);
 
-  console.log(paymentEnvironment);
-
   const ticketChoices = [
     { name: 'Presencial', price: 250, isRemote: false },
     { name: 'Online', price: 100, isRemote: true },

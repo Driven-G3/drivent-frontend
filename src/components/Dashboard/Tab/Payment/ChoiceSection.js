@@ -16,6 +16,7 @@ export default function ChoiceSection({ className, title, choices, state, setSta
               price={price}
               onClick={() => setState(choice)}
               selected={state?.name === name ? true : false}
+              
             />
           );
         })}
