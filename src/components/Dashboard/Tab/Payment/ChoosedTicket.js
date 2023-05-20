@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import TabSectionTitle from '../TabSectionTitle';
 import { useContext } from 'react';
 import ChoiceButton from './ChoiceButton';
