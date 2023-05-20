@@ -9,7 +9,7 @@ export default function Hotel() {
   const [chosenHotel, setChosenHotel] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const { hotelList } = useHotelList();
-  console.log(hotelList[0]);
+  // console.log(hotelList[0]);
   const roomChoices = [
     {
       id: 2,
