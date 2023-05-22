@@ -1,7 +1,14 @@
 import styled from 'styled-components';
 import SimpleButton from '../SimpleButton';
+import { useContext } from 'react';
+import UserContext from '../../../../contexts/UserContext';
 
 export default function CardForm({ onSubmit, handleInputChange, handleInputFocus, cardData }) {
+  const { paymentConfirmed, setPaymentConfirmed } = useContext(UserContext);
+  function paymentConfirm() {
+    setPaymentConfirmed('confirmed');
+  };
+
   return (
     <CardFormStyle onSubmit={onSubmit}>
       <div>
@@ -47,7 +54,7 @@ export default function CardForm({ onSubmit, handleInputChange, handleInputFocus
           required
         />
       </div>
-      <SimpleButton text="FINALIZAR PAGAMENTO" />
+      <SimpleButton onClick={paymentConfirm} text="FINALIZAR PAGAMENTO" />
     </CardFormStyle>
   );
 }
