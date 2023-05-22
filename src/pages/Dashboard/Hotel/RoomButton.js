@@ -1,14 +1,29 @@
 import styled from 'styled-components';
 
 export default function RoomButton({ id, capacity, name, state, setState }) {
-  return <Button>
-    <p>{name}</p>
-  </Button>;
+  let index = 0;
+  function renderCapacityIcon(capacity) {
+    while (index !== capacity) {
+      console.log(index, capacity);
+      index = index + 1;
+      return <ion-icon name="person" />;
+    }
+  }
+
+  return (
+    <Button onClick={() => console.log('click')}>
+      <p>{name}</p>
+      <div>{renderCapacityIcon(capacity)}</div>
+    </Button>
+  );
 }
 
 const Button = styled.button`
   display: flex;
-  width: 80px;
-  height: 30px;
-  background-color: gray;
+  height: 45px;
+  width: 190px;
+  border: 1px solid #cecece;
+  border-radius: 5px;
+  justify-content: space-between;
+  align-items: center;
 `;
