@@ -14,5 +14,15 @@ export default function Activities() {
     );
   }
 
+  if (userTicket?.TicketType.isRemote) {
+    return (
+      <WarningScreen
+        tabTitle="Escolha de Atividades"
+        text="Sua modalidade de ingresso não necessita escolher
+        atividade. Você terá acesso a todas as atividades."
+      />
+    );
+  }
+
   return 'Atividades: Em breve!';
 }
