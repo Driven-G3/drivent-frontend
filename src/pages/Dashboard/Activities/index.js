@@ -1,5 +1,7 @@
 import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen';
 import useUserTicket from '../../../hooks/api/useUserTicket';
+import TabTitle from '../../../components/Dashboard/Tab/TabTitle';
+import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle';
 
 export default function Activities() {
   const { userTicket } = useUserTicket();
@@ -24,5 +26,10 @@ export default function Activities() {
     );
   }
 
-  return 'Atividades: Em breve!';
+  return (
+    <>
+      <TabTitle>Escolha de atividades</TabTitle>
+      <TabSectionTitle>Primeiro, filtre pelo dia do evento:</TabSectionTitle>
+    </>
+  );
 }

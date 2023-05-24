@@ -9,4 +9,5 @@ const SectionTitleStyle = styled.h2`
   font-size: 20px;
   line-height: 23px;
   color: #8e8e8e;
+  margin-top: 4%;
 `;
