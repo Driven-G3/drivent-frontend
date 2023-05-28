@@ -7,12 +7,50 @@ import EventCard from '../../../components/Dashboard/Tab/activities/EventCard';
 import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
 import TimesheetTrail from '../../../components/Dashboard/Tab/activities/TimesheetTrail';
 import useActivities from '../../../hooks/api/useActivities';
+import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle';
+import TimeButton from './timeButton';
+import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import { getEventInfo } from '../../../services/eventApi';
+import { eachDayOfInterval, format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default function Activities() {
   const { userTicket } = useUserTicket();
   const { activitiesRooms } = useActivitiesRooms();
   const { activities } = useActivities();
+ 
+  const [dates, setDates]= useState([]);
+  const [error, setError] = useState([]);
 
+  async function days() {
+    try {
+      const response = await getEventInfo();
+      const { startsAt, endsAt } = response;
+
+      const starts= new Date (startsAt);
+      const ends= new Date (endsAt);
+
+      const eventDays= eachDayOfInterval ({ start: starts, end: ends });
+      const formatEvent= eventDays.map((day) => format(day, 'EEE, dd/MM', { locale: ptBR }));
+      setDates(formatEvent);
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+  useEffect(() => {
+    days();
+  }, []);
+
+  // if (error) {
+  //   return (
+  //     <WarningScreen 
+  //       tabTitle="Escolha de Atividades"
+  //       text="Algo deu errado, por favor, tente novamente."
+  //     />
+  //   );
+  // }
   if (userTicket?.status === 'RESERVED' || !userTicket) {
     return (
       <WarningScreen
