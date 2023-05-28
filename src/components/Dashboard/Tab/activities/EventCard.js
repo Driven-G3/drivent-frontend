@@ -3,20 +3,30 @@ import { BiLogIn } from 'react-icons/bi';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 export default function EventCard({ title, startsAt, endsAt, freeCapacity }) {
-  const [startHour, startMinute] = startsAt.split(':');
-  const [endHour, endMinute] = endsAt.split(':');
+  const startHour = new Date(startsAt).getHours();
+  const startMinute = new Date(startsAt).getMinutes();
+
+  const endHour = new Date(endsAt).getHours();
+  const endMinute = new Date(endsAt).getMinutes();
 
   const startInMinute = Number(startHour) * 60 + Number(startMinute);
   const endInMinute = Number(endHour) * 60 + Number(endMinute);
 
   const durationInHours = (endInMinute - startInMinute) / 60;
 
+  function timeToString(time) {
+    const d = new Date(time);
+    const hour = d.getHours().toString().padStart(2, 0);
+    const minute = d.getMinutes().toString().padStart(2, 0);
+    return hour + ':' + minute;
+  }
+
   return (
     <EventCardStyle duration={durationInHours}>
       <div>
         <h4>{title}</h4>
         <p>
-          {startsAt} - {endsAt}
+          {timeToString(startsAt)} - {timeToString(endsAt)}
         </p>
       </div>
 
@@ -109,7 +119,7 @@ const EventCardStyle = styled.div`
   .action > .wrapper--sold-out {
     p {
       margin-top: 6px;
-      color: #CC6666
+      color: #cc6666;
     }
   }
 `;
