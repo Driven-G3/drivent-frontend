@@ -5,11 +5,12 @@ import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen.js';
 import PaymentSubTab from './PaymentSubTab.js';
 import TicketsSubTab from './TicketsSubTab.js';
 import PaymentContext from '../../../contexts/PaymentContext.js';
+import useUserTicket from '../../../hooks/api/useUserTicket.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
   const { paymentEnvironment } = useContext(PaymentContext);
-
+  const { userTicket } = useUserTicket();
   if (!enrollment) {
     return (
       <WarningScreen
@@ -17,6 +18,10 @@ export default function Payment() {
         tabTitle="Ingresso e Pagamento"
       />
     );
+  }
+
+  if (userTicket) {
+    return <PaymentSubTab />;
   }
 
   return <>{paymentEnvironment ? <PaymentSubTab /> : <TicketsSubTab />}</>;
