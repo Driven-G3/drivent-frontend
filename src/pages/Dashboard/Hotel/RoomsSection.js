@@ -3,8 +3,7 @@ import RoomButton from './RoomButton';
 import { useState } from 'react';
 import TabSectionTitle from '../../../components/Dashboard/Tab/TabSectionTitle';
 
-export default function RoomsSection({ hotel }) {
-  const [chosenRoom, setChosenRoom] = useState(null);
+export default function RoomsSection({ hotel, state, setState, choices }) {
   const roomChoices = [
     {
       id: 2,
@@ -40,8 +39,6 @@ export default function RoomsSection({ hotel }) {
     },
   ];
 
-  if (!hotel) return <></>;
-
   return (
     <Section className="roomSelection">
       <TabSectionTitle children="Boa pedida! Agora escolha seu quarto:" />
@@ -54,8 +51,9 @@ export default function RoomsSection({ hotel }) {
                 id={room.id}
                 name={room.name}
                 capacity={room.capacity}
-                state={chosenRoom}
-                setState={setChosenRoom}
+                state={state}
+                setState={setState}
+                selected={state === room.id ? true : false}
               />
             );
           })}
@@ -66,7 +64,7 @@ export default function RoomsSection({ hotel }) {
 
 const Section = styled.div`
   width: auto;
-  height: 300px;
+  height: auto;
   padding-top: 30px;
   > div {
     margin-top: 30px;

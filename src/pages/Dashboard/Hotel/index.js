@@ -1,56 +1,60 @@
 import TabTitle from '../../../components/Dashboard/Tab/TabTitle';
-import ChoiceSection from '../../../components/Dashboard/Tab/Payment/ChoiceSection.js';
+import ChoiceSection from '../../../components/Dashboard/Tab/Hotel/ChoiceSection.js';
+
 import { useState } from 'react';
 import useHotelList from '../../../hooks/api/useHotelList.js';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import { useContext } from 'react';
 import WarningScreen from '../../../components/Dashboard/Tab/WarningScreen';
 import RoomsSection from './RoomsSection';
+import PaymentContext from '../../../contexts/PaymentContext';
+import useUserTicket from '../../../hooks/api/useUserTicket';
+import SubmitHotel from '../../../components/Dashboard/Tab/Hotel/SubmitHotel';
 
 export default function Hotel() {
   const { enrollment } = useEnrollment();
-  const [chosenHotel, setChosenHotel] = useState(null);
+  const { userTicket } = useUserTicket();
   const { hotelList } = useHotelList();
+  const roomList = null;
+  const [chosenHotel, setChosenHotel] = useState(null);
+  const [chosenRoom, setChosenRoom] = useState(null);
 
-  const hotelChoices = [
-    {
-      id: 1,
-      name: 'Hotel California',
-      image: 'https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg',
-      createdAt: '2023-05-19T20:12:22.008Z',
-      updatedAt: '2023-05-19T20:12:22.010Z',
-    },
-    {
-      id: 2,
-      name: 'Hotel Maranhão',
-      image: 'https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg',
-      createdAt: '2023-05-19T20:12:22.008Z',
-      updatedAt: '2023-05-19T20:12:22.010Z',
-    },
-  ];
-
-  // const { paymentEnvironment } = useContext(PaymentContext);
-  if (!enrollment) {
+  if (!enrollment || !userTicket) {
     return (
       <WarningScreen
-        text="Você precisa completar seu pagamento antes de prosseguir para a escolha do hotel"
-        tabTitle="Escolha de hotel e quarto"
+        text="Você precisa completar sua inscrição antes de prosseguir para a escolha do hotel"
+        tabTitle="Hotel e Quarto"
       />
     );
   }
-  // return <>{paymentEnvironment ? <PaymentSubTab /> : <TicketsSubTab />}</>;
-  return (
-    <>
-      <TabTitle>Escolha de hotel e quarto</TabTitle>
-      <ChoiceSection
-        className="hotelSelection"
-        title="Primeiro, escolha seu hotel"
-        choices={hotelChoices}
-        state={chosenHotel}
-        setState={setChosenHotel}
+  if (userTicket.status === 'RESERVED') {
+    return (
+      <WarningScreen
+        text="Você precisa completar seu pagamento antes de prosseguir para a escolha do hotel"
+        tabTitle="Hotel e Quarto"
       />
-      <RoomsSection hotel={chosenHotel}/>
-      
-    </>
-  );
+    );
+  }
+  if (userTicket.status === 'PAID') {
+    return (
+      <>
+        <TabTitle>Escolha de hotel e quarto</TabTitle>
+        <ChoiceSection
+          className="hotelSelection"
+          title="Primeiro, escolha seu hotel"
+          choices={hotelList}
+          state={chosenHotel}
+          setState={setChosenHotel}
+        />
+        {chosenHotel ? (
+          <RoomsSection hotel={chosenHotel} state={chosenRoom} setState={setChosenRoom} choices={roomList} />
+        ) : (
+          <></>
+        )}
+
+        {chosenRoom ? <SubmitHotel /> : <></>}
+      </>
+    );
+  }
+  return;
 }

@@ -36,7 +36,7 @@ export default function CardArea() {
 
   async function submit(e) {
     e.preventDefault();
-    //setConfirmedPayment(true);
+    setConfirmedPayment(true);
     try {
       const data = {
         ...cardData,
@@ -59,6 +59,7 @@ export default function CardArea() {
       toast('Algo deu errado com o pagamento!');
     }
   }
+  
   return (
     <CardStyle>
       <div>

@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 
-export default function RoomButton({ id, capacity, name, state, setState }) {
-  let index = 0;
+export default function RoomButton({ id, capacity, name, state, setState, selected=false }) {
   function renderCapacityIcon(capacity) {
-    while (index !== capacity) {
-      console.log(index, capacity);
-      index = index + 1;
-      return <ion-icon name="person" />;
+    const icons = [];
+    for (let index = 0; index !== capacity; index++) {
+      console.log(state);
+      icons.push(<ion-icon name="person" />);
     }
+    return icons;
   }
 
   return (
-    <Button onClick={() => console.log('click')}>
+    <Button state={state} selected={selected} onClick={() => setState(id)}>
       <p>{name}</p>
       <div>{renderCapacityIcon(capacity)}</div>
     </Button>
@@ -26,4 +26,8 @@ const Button = styled.button`
   border-radius: 5px;
   justify-content: space-between;
   align-items: center;
+  background-color: ${(props) => (props.selected ? '#FFEED2' : 'inherit')};
+  :hover {
+    cursor: pointer;
+  }
 `;
